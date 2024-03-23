@@ -14,7 +14,7 @@ func (s *service) router() chi.Router {
 		ape.LoganMiddleware(s.log),
 		ape.CtxMiddleware(
 			handlers.CtxLog(s.log),
-			handlers.CtxMerkleTrees(make(map[string][]byte)),
+			handlers.CtxIpfs(s.ipfs),
 		),
 	)
 	r.Route("/integrations/pem-inclusion-prover-svc", func(r chi.Router) {

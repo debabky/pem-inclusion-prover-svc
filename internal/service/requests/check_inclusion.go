@@ -8,8 +8,8 @@ import (
 )
 
 type GenerateProofRequestData struct {
-	PemBlock string `json:"pem_block"`
-	Hash     string `json:"hash"`
+	PemBlock     string `json:"pem_block"`
+	MerkleTreeId string `json:"merkle_tree_id"`
 }
 
 type GenerateProofRequest struct {

@@ -8,12 +8,17 @@ import (
 	"gitlab.com/distributed_lab/kit/copus/types"
 	"gitlab.com/distributed_lab/logan/v3"
 	"gitlab.com/distributed_lab/logan/v3/errors"
+
+	shell "github.com/ipfs/go-ipfs-api"
 )
 
 type service struct {
 	log      *logan.Entry
 	copus    types.Copus
 	listener net.Listener
+	ipfs     *shell.Shell
+
+	cfg config.Config
 }
 
 func (s *service) run() error {
@@ -28,10 +33,14 @@ func (s *service) run() error {
 }
 
 func newService(cfg config.Config) *service {
+
 	return &service{
 		log:      cfg.Log(),
 		copus:    cfg.Copus(),
 		listener: cfg.Listener(),
+		ipfs:     shell.NewShell(cfg.IpfsConfig().Url),
+
+		cfg: cfg,
 	}
 }
 

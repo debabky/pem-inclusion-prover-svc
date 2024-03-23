@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"crypto/x509"
 	"encoding/pem"
 	"errors"
@@ -54,12 +55,16 @@ func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	merkleTrees := MerkleTrees(r)
-	merkleTrees[tree.String()] = marshaledTree
+	cid, err := Ipfs(r).Add(bytes.NewReader(marshaledTree))
+	if err != nil {
+		Log(r).WithError(err).Error("Failed to save the tree to IPFS")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
 
 	ape.Render(w, resources.MerkleRootHash{
 		Key: resources.Key{
-			ID:   tree.String(),
+			ID:   cid,
 			Type: resources.MERKLE_ROOT_HASH,
 		},
 		Attributes: resources.MerkleRootHashAttributes{

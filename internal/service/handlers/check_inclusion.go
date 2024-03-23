@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bytes"
 	"crypto/x509"
 	"encoding/hex"
 	"encoding/json"
@@ -23,16 +24,17 @@ func CheckInclusion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	trees := MerkleTrees(r)
-	marshaled_tree, ok := trees[request.Data.Hash]
-	if !ok {
-		Log(r).WithField("merkle_root_hash", request.Data.Hash).Error("Merkle tree doesn't exist")
-		ape.RenderErr(w, problems.BadRequest(errors.New("merkle tree does not exist"))...)
+	data, err := Ipfs(r).Cat(request.Data.MerkleTreeId)
+	if err != nil {
+		Log(r).WithError(err).Error("Failed to get the merkle tree from the ipfs")
+		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
 
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(data)
 	var tree merkletree.MerkleTree
-	if err := json.Unmarshal(marshaled_tree, &tree); err != nil {
+	if err := json.Unmarshal(buf.Bytes(), &tree); err != nil {
 		Log(r).WithError(err).Error("Failed to unmarshal the tree")
 		ape.RenderErr(w, problems.InternalError())
 		return

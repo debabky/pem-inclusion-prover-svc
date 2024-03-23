@@ -2,8 +2,8 @@ log:
   level: debug
   disable_sentry: true
 
-db:
-  url: db_url
+ipfs:
+  url: ipfs_url
 
 listener:
   addr: :8000
