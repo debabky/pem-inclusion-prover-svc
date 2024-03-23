@@ -1,0 +1,15 @@
+allOf:
+  - $ref: "#/components/schemas/CreateMerkleTreeRequestKey"
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - pem_blocks
+        properties:
+          pem_blocks:
+            type: array
+            items:
+              $ref: "#/components/schemas/PEM"

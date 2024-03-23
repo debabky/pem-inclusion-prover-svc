@@ -14,10 +14,14 @@ func (s *service) router() chi.Router {
 		ape.LoganMiddleware(s.log),
 		ape.CtxMiddleware(
 			handlers.CtxLog(s.log),
+			handlers.CtxMerkleTrees(make(map[string][]byte)),
 		),
 	)
 	r.Route("/integrations/pem-inclusion-prover-svc", func(r chi.Router) {
-		// configure endpoints here
+		r.Route("/v1", func(r chi.Router) {
+			r.Post("/generate-merkle-tree", handlers.GenerateMerkleTree)
+			r.Get("/generate-merkle-proof", handlers.CheckInclusion)
+		})
 	})
 
 	return r

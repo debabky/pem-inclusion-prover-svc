@@ -17,9 +17,8 @@ post:
                 - pem_data
               properties:
                 pem_data:
-                  type: array
-                  items:
-                    $ref: "#/components/schemas/PEM"
+                  type: object
+                  $ref: "#/components/schemas/CreateMerkleTreeRequest"
   responses:
     "200":
       description: Success

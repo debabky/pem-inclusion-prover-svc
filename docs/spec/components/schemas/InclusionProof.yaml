@@ -16,4 +16,4 @@ allOf:
               type: string
           index:
             type: integer
-            format: int64
+            format: uint64
