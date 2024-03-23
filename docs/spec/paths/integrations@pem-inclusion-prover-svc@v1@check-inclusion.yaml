@@ -1,0 +1,50 @@
+post:
+  tags:
+    - PEM inclusion service
+  summary: Check PEM Merkle Tree inclusion proof
+  operationId: check-inclusion-proof
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - data
+          properties:
+            data:
+              type: object
+              required:
+                - proof_data
+              properties:
+                proof_data:
+                  type: object
+                  $ref: "#/components/schemas/InclusionProofRequest"
+  responses:
+    "200":
+      description: Success
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                $ref: "#/components/schemas/InclusionProof"
+    "400":
+      description: Bad Request Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Errors"
+    "429":
+      description: Too Many Requests Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Errors"
+    "500":
+      description: Internal Error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Errors"

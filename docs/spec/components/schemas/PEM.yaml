@@ -1,0 +1,13 @@
+allOf:
+  - $ref: "#/components/schemas/PEMKey"
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - pem_block
+        properties:
+          pem_block:
+            type: string

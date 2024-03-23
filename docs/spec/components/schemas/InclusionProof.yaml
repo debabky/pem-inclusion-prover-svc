@@ -1,0 +1,19 @@
+allOf:
+  - $ref: "#/components/schemas/InclusionProofKey"
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - hashes
+          - index
+        properties:
+          hashes:
+            type: array
+            items:
+              type: string
+          index:
+            type: integer
+            format: int64

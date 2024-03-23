@@ -1,0 +1,13 @@
+allOf:
+  - $ref: "#/components/schemas/MerkleRootHashKey"
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - hash
+        properties:
+          hash:
+            type: string

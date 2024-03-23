@@ -1,0 +1,18 @@
+allOf:
+  - $ref: "#/components/schemas/InclusionProofRequestKey"
+  - type: object
+    required:
+      - attributes
+    properties:
+      attributes:
+        type: object
+        required:
+          - pem_block
+          - merkle_root_hash
+        properties:
+          pem_data:
+            type: object
+            $ref: "#/components/schemas/PEM"
+          merkle_root_hash:
+            type: object
+            $ref: "#/components/schemas/MerkleRootHash"
