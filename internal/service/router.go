@@ -20,7 +20,7 @@ func (s *service) router() chi.Router {
 	r.Route("/integrations/pem-inclusion-prover-svc", func(r chi.Router) {
 		r.Route("/v1", func(r chi.Router) {
 			r.Post("/generate-merkle-tree", handlers.GenerateMerkleTree)
-			r.Get("/generate-merkle-proof", handlers.CheckInclusion)
+			r.Get("/generate-merkle-proof", handlers.GenerateInclusionProof)
 		})
 	})
 

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"bytes"
-	"crypto/x509"
 	"encoding/hex"
 	"encoding/json"
 	"encoding/pem"
@@ -16,7 +15,7 @@ import (
 	"gitlab.com/distributed_lab/ape/problems"
 )
 
-func CheckInclusion(w http.ResponseWriter, r *http.Request) {
+func GenerateInclusionProof(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewGenerateProofRequest(r)
 	if err != nil {
 		Log(r).WithError(err).Error("Failed to parse the request")
@@ -26,7 +25,7 @@ func CheckInclusion(w http.ResponseWriter, r *http.Request) {
 
 	data, err := Ipfs(r).Cat(request.Data.MerkleTreeId)
 	if err != nil {
-		Log(r).WithError(err).Error("Failed to get the merkle tree from the ipfs")
+		Log(r).WithError(err).Error("Failed to get the Merkle tree from the ipfs")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
@@ -35,7 +34,7 @@ func CheckInclusion(w http.ResponseWriter, r *http.Request) {
 	buf.ReadFrom(data)
 	var tree merkletree.MerkleTree
 	if err := json.Unmarshal(buf.Bytes(), &tree); err != nil {
-		Log(r).WithError(err).Error("Failed to unmarshal the tree")
+		Log(r).WithError(err).Error("Failed to unmarshal the Merkle tree")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -47,17 +46,10 @@ func CheckInclusion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cert, err := x509.ParseCertificate(pemBlock.Bytes)
+	proof, err := tree.GenerateProof(pemBlock.Bytes, 0)
 	if err != nil {
-		Log(r).WithError(err).Error("Failed to convert a PEM block to a certificate")
-		ape.RenderErr(w, problems.BadRequest(err)...)
-		return
-	}
-
-	proof, err := tree.GenerateProof(cert.Raw, 0)
-	if err != nil {
-		Log(r).WithError(err).Error("Pem block is not present in the tree")
-		ape.RenderErr(w, problems.BadRequest(errors.New("pem block is not present in the tree"))...)
+		Log(r).WithError(err).Error("The pem block is not present in the tree")
+		ape.RenderErr(w, problems.BadRequest(errors.New("the pem block is not present in the tree"))...)
 		return
 	}
 

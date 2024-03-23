@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"bytes"
-	"crypto/x509"
 	"encoding/pem"
 	"errors"
 	"net/http"
@@ -15,6 +14,8 @@ import (
 	"gitlab.com/distributed_lab/ape/problems"
 )
 
+const PEM_BLOCK_TYPE = "CERTIFICATE"
+
 func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewCreateMerkleTreeRequest(r)
 	if err != nil {
@@ -25,20 +26,14 @@ func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 
 	pemBlocks, err := parsePemBlocks(request.Data.PemBlocks)
 	if err != nil {
-		Log(r).WithError(err).Error("Failed to parse PEM blocks")
+		Log(r).WithError(err).Error("Failed to parse the PEM blocks")
 		ape.RenderErr(w, problems.BadRequest(err)...)
 		return
 	}
 
 	data := make([][]byte, 0)
 	for _, block := range pemBlocks {
-		cert, err := x509.ParseCertificate(block.Bytes)
-		if err != nil {
-			Log(r).WithError(err).Error("Failed to convert a PEM block to a certificate")
-			ape.RenderErr(w, problems.BadRequest(err)...)
-			return
-		}
-		data = append(data, cert.Raw)
+		data = append(data, block.Bytes)
 	}
 
 	tree, err := merkletree.NewTree(merkletree.WithData(data))
@@ -50,14 +45,14 @@ func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 
 	marshaledTree, err := tree.MarshalJSON()
 	if err != nil {
-		Log(r).WithError(err).Error("Failed to marhsale a Merkle tree")
+		Log(r).WithError(err).Error("Failed to marhsal the Merkle tree")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
 
 	cid, err := Ipfs(r).Add(bytes.NewReader(marshaledTree))
 	if err != nil {
-		Log(r).WithError(err).Error("Failed to save the tree to IPFS")
+		Log(r).WithError(err).Error("Failed to save the Merkle tree to IPFS")
 		ape.RenderErr(w, problems.InternalError())
 		return
 	}
@@ -73,16 +68,16 @@ func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func parsePemBlocks(pemBlocks []string) ([]*pem.Block, error) {
-	blocks := make([]*pem.Block, len(pemBlocks))
+func parsePemBlocks(rawPemBlocks []string) ([]*pem.Block, error) {
+	pemBlocks := make([]*pem.Block, len(rawPemBlocks))
 
-	for i, pem_block := range pemBlocks {
-		pem, _ := pem.Decode([]byte(pem_block))
-		if pem == nil {
+	for i, rawPemBlock := range rawPemBlocks {
+		pemBlock, _ := pem.Decode([]byte(rawPemBlock))
+		if pemBlock == nil || pemBlock.Type != PEM_BLOCK_TYPE {
 			return nil, errors.New("failed to decode a pem block")
 		}
-		blocks[i] = pem
+		pemBlocks[i] = pemBlock
 	}
 
-	return blocks, nil
+	return pemBlocks, nil
 }

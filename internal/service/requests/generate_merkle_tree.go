@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/pkg/errors"
 )
 
@@ -22,5 +23,11 @@ func NewCreateMerkleTreeRequest(r *http.Request) (CreateMerkleTreeRequest, error
 		return request, errors.Wrap(err, "failed to unmarshal")
 	}
 
-	return request, nil
+	return request, validateCreateMerkleTreeRequest(&request)
+}
+
+func validateCreateMerkleTreeRequest(r *CreateMerkleTreeRequest) error {
+	return validation.Errors{
+		"pem_blocks": validation.Validate(&r.Data.PemBlocks, validation.Required),
+	}.Filter()
 }
