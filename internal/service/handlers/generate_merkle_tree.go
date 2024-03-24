@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"encoding/hex"
 	"encoding/pem"
 	"net/http"
 
@@ -36,7 +37,9 @@ func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 
 	data := make([][]byte, 0)
 	for _, certificate := range certificates {
-		data = append(data, certificate.RawSubjectPublicKeyInfo[:HASH_DATA_LENGTH])
+		hash := poseidon.New()
+		println(hex.EncodeToString(hash.Hash(certificate.RawSubjectPublicKeyInfo[:HASH_DATA_LENGTH])))
+		data = append(data, hash.Hash(certificate.RawSubjectPublicKeyInfo[:HASH_DATA_LENGTH]))
 	}
 
 	tree, err := merkletree.NewTree(merkletree.WithData(data), merkletree.WithHashType(poseidon.New()))

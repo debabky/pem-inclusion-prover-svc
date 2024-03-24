@@ -5,7 +5,6 @@ go 1.22.1
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/go-chi/chi v4.1.2+incompatible
-	github.com/iden3/go-iden3-crypto v0.0.16
 	github.com/ipfs/go-ipfs-api v0.7.0
 	gitlab.com/distributed_lab/ape v1.7.1
 	gitlab.com/distributed_lab/kit v1.11.3
@@ -16,6 +15,7 @@ require (
 	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/crackcomm/go-gitignore v0.0.0-20170627025303-887ab5e44cc3 // indirect
+	github.com/iden3/go-iden3-crypto v0.0.16 // indirect
 	github.com/ipfs/boxo v0.12.0 // indirect
 	github.com/ipfs/go-cid v0.4.1 // indirect
 	github.com/keybase/go-crypto v0.0.0-20200123153347-de78d2cb44f4 // indirect
@@ -77,7 +77,6 @@ require (
 	github.com/subosito/gotenv v1.6.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/tklauser/numcpus v0.6.0 // indirect
-	github.com/wealdtech/go-merkletree/v2 v2.5.1
 	gitlab.com/distributed_lab/figure v2.1.2+incompatible
 	gitlab.com/distributed_lab/figure/v3 v3.1.4 // indirect
 	gitlab.com/distributed_lab/lorem v0.2.0 // indirect
