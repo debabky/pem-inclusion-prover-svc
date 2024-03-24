@@ -2,21 +2,17 @@ package handlers
 
 import (
 	"bytes"
-	// "crypto/x509"
 	"encoding/pem"
 	"net/http"
 
-	"github.com/rarimo/certificate-transparency-go/x509"
-
-	"gitlab.com/distributed_lab/logan/v3"
-	"gitlab.com/distributed_lab/logan/v3/errors"
-
 	"github.com/debabky/pem-inclusion-prover-svc/internal/service/requests"
 	"github.com/debabky/pem-inclusion-prover-svc/resources"
-
+	"github.com/rarimo/certificate-transparency-go/x509"
 	"github.com/wealdtech/go-merkletree/v2"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
+	"gitlab.com/distributed_lab/logan/v3"
+	"gitlab.com/distributed_lab/logan/v3/errors"
 )
 
 const PEM_BLOCK_TYPE = "CERTIFICATE"

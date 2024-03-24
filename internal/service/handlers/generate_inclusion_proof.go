@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"bytes"
-	"crypto/x509"
 	"encoding/hex"
 	"encoding/json"
 	"encoding/pem"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/debabky/pem-inclusion-prover-svc/internal/service/requests"
 	"github.com/debabky/pem-inclusion-prover-svc/resources"
+	"github.com/rarimo/certificate-transparency-go/x509"
 	"github.com/wealdtech/go-merkletree/v2"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
