@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"bytes"
-	"encoding/hex"
 	"encoding/pem"
 	"net/http"
 
@@ -37,9 +36,7 @@ func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 
 	data := make([][]byte, 0)
 	for _, certificate := range certificates {
-		hash := poseidon.New()
-		println(hex.EncodeToString(hash.Hash(certificate.RawSubjectPublicKeyInfo[:HASH_DATA_LENGTH])))
-		data = append(data, hash.Hash(certificate.RawSubjectPublicKeyInfo[:HASH_DATA_LENGTH]))
+		data = append(data, poseidon.New().Hash(certificate.RawSubjectPublicKeyInfo[:HASH_DATA_LENGTH]))
 	}
 
 	tree, err := merkletree.NewTree(merkletree.WithData(data), merkletree.WithHashType(poseidon.New()))
@@ -78,7 +75,6 @@ func parsePemBlocks(rawPemBlocks []string) ([]*x509.Certificate, error) {
 	certificates := make([]*x509.Certificate, len(rawPemBlocks))
 
 	for i, rawPemBlock := range rawPemBlocks {
-
 		pemBlock, _ := pem.Decode([]byte(rawPemBlock))
 		if pemBlock == nil || pemBlock.Type != PEM_BLOCK_TYPE {
 			return nil, errors.From(errors.New("failed to decode a pem block"), logan.F{
