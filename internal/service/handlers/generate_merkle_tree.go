@@ -17,7 +17,7 @@ import (
 )
 
 const PEM_BLOCK_TYPE = "CERTIFICATE"
-const FRAME_SIZE = 16
+const HASH_DATA_LENGTH = 128
 
 func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewCreateMerkleTreeRequest(r)
@@ -36,7 +36,7 @@ func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 
 	data := make([][]byte, 0)
 	for _, certificate := range certificates {
-		data = append(data, certificate.RawSubjectPublicKeyInfo)
+		data = append(data, certificate.RawSubjectPublicKeyInfo[:HASH_DATA_LENGTH])
 	}
 
 	tree, err := merkletree.NewTree(merkletree.WithData(data), merkletree.WithHashType(poseidon.New()))

@@ -54,7 +54,7 @@ func GenerateInclusionProof(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	proof, err := tree.GenerateProof(x509.RawSubjectPublicKeyInfo, 0)
+	proof, err := tree.GenerateProof(x509.RawSubjectPublicKeyInfo[:HASH_DATA_LENGTH], 0)
 	if err != nil {
 		Log(r).WithError(err).Error("The pem block is not present in the tree")
 		ape.RenderErr(w, problems.BadRequest(errors.New("the pem block is not present in the tree"))...)
