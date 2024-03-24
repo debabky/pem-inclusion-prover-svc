@@ -8,10 +8,10 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/debabky/go-merkletree/v2"
 	"github.com/debabky/pem-inclusion-prover-svc/internal/service/requests"
 	"github.com/debabky/pem-inclusion-prover-svc/resources"
 	"github.com/rarimo/certificate-transparency-go/x509"
-	"github.com/wealdtech/go-merkletree/v2"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 )

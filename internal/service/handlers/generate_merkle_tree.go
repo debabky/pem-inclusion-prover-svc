@@ -5,11 +5,11 @@ import (
 	"encoding/pem"
 	"net/http"
 
-	"github.com/debabky/pem-inclusion-prover-svc/internal/service/models"
+	"github.com/debabky/go-merkletree/v2"
+	"github.com/debabky/go-merkletree/v2/poseidon"
 	"github.com/debabky/pem-inclusion-prover-svc/internal/service/requests"
 	"github.com/debabky/pem-inclusion-prover-svc/resources"
 	"github.com/rarimo/certificate-transparency-go/x509"
-	"github.com/wealdtech/go-merkletree/v2"
 	"gitlab.com/distributed_lab/ape"
 	"gitlab.com/distributed_lab/ape/problems"
 	"gitlab.com/distributed_lab/logan/v3"
@@ -39,14 +39,7 @@ func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 		data = append(data, certificate.RawSubjectPublicKeyInfo)
 	}
 
-	hash, err := models.NewPoseidonHash(FRAME_SIZE)
-	if err != nil {
-		Log(r).WithError(err).Error("Failed to initialize Poseidon hash")
-		ape.RenderErr(w, problems.InternalError())
-		return
-	}
-
-	tree, err := merkletree.NewTree(merkletree.WithData(data), merkletree.WithHashType(hash))
+	tree, err := merkletree.NewTree(merkletree.WithData(data), merkletree.WithHashType(poseidon.New()))
 	if err != nil {
 		Log(r).WithError(err).Error("Failed to construct a Merkle tree")
 		ape.RenderErr(w, problems.InternalError())
