@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"bytes"
+	"crypto/x509"
 	"encoding/hex"
 	"encoding/json"
 	"encoding/pem"
@@ -46,7 +47,14 @@ func GenerateInclusionProof(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	proof, err := tree.GenerateProof(pemBlock.Bytes, 0)
+	x509, err := x509.ParseCertificate(pemBlock.Bytes)
+	if err != nil {
+		Log(r).WithError(err).Error("Failed to parse the PEM block to a certificate")
+		ape.RenderErr(w, problems.BadRequest(err)...)
+		return
+	}
+
+	proof, err := tree.GenerateProof(x509.RawSubjectPublicKeyInfo, 0)
 	if err != nil {
 		Log(r).WithError(err).Error("The pem block is not present in the tree")
 		ape.RenderErr(w, problems.BadRequest(errors.New("the pem block is not present in the tree"))...)
