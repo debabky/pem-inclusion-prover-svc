@@ -5,6 +5,7 @@ go 1.22.1
 require (
 	github.com/alecthomas/kingpin v2.2.6+incompatible
 	github.com/go-chi/chi v4.1.2+incompatible
+	github.com/iden3/go-iden3-crypto v0.0.16
 	github.com/ipfs/go-ipfs-api v0.7.0
 	gitlab.com/distributed_lab/ape v1.7.1
 	gitlab.com/distributed_lab/kit v1.11.3

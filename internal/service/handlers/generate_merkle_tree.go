@@ -5,6 +5,7 @@ import (
 	"encoding/pem"
 	"net/http"
 
+	"github.com/debabky/pem-inclusion-prover-svc/internal/service/models"
 	"github.com/debabky/pem-inclusion-prover-svc/internal/service/requests"
 	"github.com/debabky/pem-inclusion-prover-svc/resources"
 	"github.com/rarimo/certificate-transparency-go/x509"
@@ -16,6 +17,7 @@ import (
 )
 
 const PEM_BLOCK_TYPE = "CERTIFICATE"
+const FRAME_SIZE = 16
 
 func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 	request, err := requests.NewCreateMerkleTreeRequest(r)
@@ -37,7 +39,14 @@ func GenerateMerkleTree(w http.ResponseWriter, r *http.Request) {
 		data = append(data, certificate.RawSubjectPublicKeyInfo)
 	}
 
-	tree, err := merkletree.NewTree(merkletree.WithData(data))
+	hash, err := models.NewPoseidonHash(FRAME_SIZE)
+	if err != nil {
+		Log(r).WithError(err).Error("Failed to initialize Poseidon hash")
+		ape.RenderErr(w, problems.InternalError())
+		return
+	}
+
+	tree, err := merkletree.NewTree(merkletree.WithData(data), merkletree.WithHashType(hash))
 	if err != nil {
 		Log(r).WithError(err).Error("Failed to construct a Merkle tree")
 		ape.RenderErr(w, problems.InternalError())

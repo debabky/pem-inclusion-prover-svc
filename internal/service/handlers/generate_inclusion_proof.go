@@ -41,7 +41,7 @@ func GenerateInclusionProof(w http.ResponseWriter, r *http.Request) {
 	}
 
 	pemBlock, _ := pem.Decode([]byte(request.Data.PemBlock))
-	if pemBlock == nil {
+	if pemBlock == nil || pemBlock.Type != PEM_BLOCK_TYPE {
 		Log(r).Error("Failed to parse the pem block")
 		ape.RenderErr(w, problems.BadRequest(errors.New("failed to parse the pem block"))...)
 		return
